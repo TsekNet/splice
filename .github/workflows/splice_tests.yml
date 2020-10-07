@@ -1,8 +1,17 @@
-name: SpliceD Tests
+name: Go Tests
 on: [push, pull_request]
 jobs:
   go_tests:
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, windows-latest]
+        include:
+        - os: windows-latest
+          TEST_DIR: 'cli'
+
+        - os: windows-latest
+          TEST_DIR: 'spliced'
     steps:
       - name: Install Go
         uses: actions/setup-go@v2
@@ -11,6 +20,8 @@ jobs:
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
+      
+      - run: echo ${{matrix.TEST_DIR}}
 
       - name: Download Dependencies
         run: go get -v -t -d ./spliced/...
